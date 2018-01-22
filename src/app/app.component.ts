@@ -6,10 +6,19 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  data: number[] = [1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048]
+  data: number[] = this.randomArray(100, 10, 0, 10000)
   labels: string[] = ['label1', 'label2', 'label3']
-  colors: string[] = ['rgba(0,255,0,1)', 'rgba(0,255,0,0.5)']
+  colors: string[] = ['rgba(0,255,0,1)', 'rgba(0,255,0,0.5)', 'rgba(0,0,0,0.3)', 'black']
+  fontSize: number = 12
+  decimalPlaces: number = 1;
 
-  data2: number[] = [10,12,8,11,14,10,7,9,8,9,10,4,2,5,3,5,10]
-  colors2: string[] = ['rgba(255,0,0,1)', 'rgba(255,0,0,0.5)']
+  private randomArray(length, strength, min, max) {
+    let output = []
+    let start = (max - min) / 2
+    for (let i = 0; i < length; i++) {
+      start += Math.round((Math.random() - 0.5) * strength)
+      output.push(start)
+    }
+    return output
+  }
 }

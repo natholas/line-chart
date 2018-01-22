@@ -14,6 +14,8 @@ export class LineChartComponent implements OnInit {
 
   @Input() data: number[]
   @Input() colors: string[]
+  @Input() decimalPlaces: number
+  @Input() fontSize: number
   @Input() zoomSpeed: number
   @Input() limits: number[]
   @Input() offsets: number[]
@@ -47,9 +49,48 @@ export class LineChartComponent implements OnInit {
     }
     if (removeEnd > 0) data = data.splice(0, data.length - removeEnd)
 
+    let guideData = data.slice()
     data = this.normalizeData(data, 0, this.size[1], this.getOffsets(data))
     data = this.reverseHeights(data)
     this.drawLine(data, xPos, stepSize)
+    this.drawGuides(guideData, data)
+  }
+
+  private drawGuides(rawData: number[], pixelData: number[]) {
+    let rawMin = Math.min(...rawData)
+    let rawMax = Math.max(...rawData)
+    let rawMid = rawData.reduce((a,b) => {
+      return a + b
+    }) / rawData.length
+
+    let pixelMin = Math.max(...pixelData)
+    let pixelMax = Math.min(...pixelData)
+    let pixelMid = pixelData.reduce((a, b) => {
+      return a + b
+    }) / pixelData.length
+
+    this.ctx.strokeStyle = this.colors[2]
+    this.ctx.fillStyle = this.colors[3]
+    this.ctx.lineWidth = 1
+    this.ctx.font = this.fontSize + "px Arial"
+
+    this.ctx.fillText(rawMin.toFixed(this.decimalPlaces), 4, pixelMin + this.fontSize / 3)
+    this.ctx.beginPath()
+    this.ctx.moveTo((rawMin.toFixed(this.decimalPlaces).length * this.fontSize / 1.5) + 4, pixelMin)
+    this.ctx.lineTo(this.canvas.width, pixelMin)
+    this.ctx.stroke()
+
+    this.ctx.fillText(rawMax.toFixed(this.decimalPlaces), 4, pixelMax + this.fontSize / 3)
+    this.ctx.beginPath()
+    this.ctx.moveTo((rawMax.toFixed(this.decimalPlaces).length * this.fontSize / 1.5) + 4, pixelMax)
+    this.ctx.lineTo(this.canvas.width, pixelMax)
+    this.ctx.stroke()
+
+    this.ctx.fillText(rawMid.toFixed(this.decimalPlaces), 4, pixelMid + this.fontSize / 3)
+    this.ctx.beginPath()
+    this.ctx.moveTo((rawMid.toFixed(this.decimalPlaces).length * this.fontSize / 1.5) + 4, pixelMid)
+    this.ctx.lineTo(this.canvas.width, pixelMid)
+    this.ctx.stroke()
   }
 
   private drawLine(data: number[], xPos: number, stepSize: number) {

@@ -11,6 +11,8 @@ export class ChartComponent implements OnInit {
   @Input() data: number[]
   @Input() labels: string[]
   @Input() colors: string[]
+  @Input() fontSize: number
+  @Input() decimalPlaces: number
 
   public zoomSpeed: number = 100
   public size: number[] = [1000, 600]
