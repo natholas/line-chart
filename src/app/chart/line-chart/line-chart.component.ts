@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, Input } from '@angular/core';
+import { Component, OnInit, ViewChild, Input } from '@angular/core'
 
 @Component({
   selector: 'app-line-chart',
@@ -13,6 +13,7 @@ export class LineChartComponent implements OnInit {
   private rendering: boolean = false
 
   @Input() data: number[]
+  @Input() labels: string[]
   @Input() colors: string[]
   @Input() decimalPlaces: number
   @Input() fontSize: number
@@ -20,6 +21,7 @@ export class LineChartComponent implements OnInit {
   @Input() limits: number[]
   @Input() offsets: number[]
   @Input() size: number[]
+  @Input() minLabelSpacing: number
 
   ngOnInit() {
     this.canvas = this.lineChart.nativeElement
@@ -39,7 +41,7 @@ export class LineChartComponent implements OnInit {
     this.clearCanvas()
 
     let xPos = this.limits[0]
-    let stepSize = (((this.size[0] - this.limits[0]) - this.limits[1]) / data.length)
+    let stepSize = (((this.size[0] - this.limits[0]) - this.limits[1]) / (data.length - 1))
     let removeStart = Math.abs(Math.ceil(xPos / stepSize)) - 1
     let removeEnd = Math.abs(Math.floor(this.limits[1] / stepSize)) - 1
 
@@ -54,12 +56,65 @@ export class LineChartComponent implements OnInit {
     data = this.reverseHeights(data)
     this.drawLine(data, xPos, stepSize)
     this.drawGuides(guideData, data)
+    this.renderLabels(this.labels)
+  }
+
+  private renderLabels(_labels: string[]) {
+    let labels = _labels.slice()
+    let xPos = this.limits[0]
+    let stepSize = (((this.size[0] - this.limits[0]) - this.limits[1]) / (labels.length - 1))
+
+    let interval = this.getLabelAdjustmentInterval(labels, this.minLabelSpacing)
+    if (interval > 0) {
+      labels = this.adjustedLabels(labels, interval)
+    }
+
+    let removeStart = Math.abs(Math.ceil(xPos / stepSize)) - 1
+    let removeEnd = Math.abs(Math.floor(this.limits[1] / stepSize)) - 1
+
+    if (removeStart > 0) {
+      xPos += removeStart * stepSize
+      labels = labels.splice(removeStart)
+    }
+    if (removeEnd > 0) labels = labels.splice(0, labels.length - removeEnd)
+    this.drawLabels(labels, xPos, stepSize)
+  }
+
+  private drawLabels(labels: string[], xPos: number, stepSize: number) {
+    for (let label of labels) {
+      let labelWidth = this.getStringSize(label, this.fontSize)
+      let startPos = xPos - labelWidth / 2
+      if (startPos > 0 && startPos + labelWidth < this.canvas.width) {
+        this.ctx.fillText(label, startPos, this.canvas.height - this.fontSize / 1.5)
+      }
+      xPos += stepSize
+    }
+  }
+
+  private drawLine(data: number[], xPos: number, stepSize: number) {
+    this.ctx.beginPath()
+
+    let up = data[0] > data[data.length - 1]
+    this.ctx.strokeStyle = this.colors[0]
+    this.ctx.fillStyle = this.colors[1]
+
+    this.ctx.moveTo(xPos, data[0])
+    for (let point of data) {
+      this.ctx.lineTo(xPos, point)
+      xPos += stepSize
+    }
+    this.ctx.lineWidth = 3
+    this.ctx.stroke()
+
+    this.ctx.lineTo(this.size[0], this.size[1])
+    this.ctx.lineTo(0, this.size[1])
+    this.ctx.fill()
   }
 
   private drawGuides(rawData: number[], pixelData: number[]) {
     let rawMin = Math.min(...rawData)
     let rawMax = Math.max(...rawData)
-    let rawMid = rawData.reduce((a,b) => {
+    let rawMid = rawData.reduce((a, b) => {
       return a + b
     }) / rawData.length
 
@@ -93,24 +148,28 @@ export class LineChartComponent implements OnInit {
     this.ctx.stroke()
   }
 
-  private drawLine(data: number[], xPos: number, stepSize: number) {
-    this.ctx.beginPath();
+  private getLabelAdjustmentInterval(labels: string[], minSpacing: number) {
+    let totalLabel = labels.reduce((total: string, label: string) => {
+      return total + label
+    })
 
-    let up = data[0] > data[data.length - 1]
-    this.ctx.strokeStyle = this.colors[0]
-    this.ctx.fillStyle = this.colors[1]
+    let totalLabelWidth = this.getStringSize(totalLabel, this.fontSize)
+    totalLabelWidth += labels.length * minSpacing
+    
+    let totalWidth = this.canvas.width - this.limits[0] - this.limits[1]
 
-    this.ctx.moveTo(xPos, data[0])
-    for (let point of data) {
-      xPos += stepSize
-      this.ctx.lineTo(xPos, point)
+    return Math.floor(totalLabelWidth / totalWidth)
+  }
+
+  private adjustedLabels(labels: string[], interval: number) {
+    let count = 0
+    for (let i = 0; i < labels.length; i ++) {
+      count += 1
+      if (count <= interval) {
+        labels[i] = ''
+      } else count = 0
     }
-    this.ctx.lineWidth = 3
-    this.ctx.stroke()
-
-    this.ctx.lineTo(this.size[0], this.size[1])
-    this.ctx.lineTo(0, this.size[1])
-    this.ctx.fill()
+    return labels
   }
 
   private resizeCanvas() {
@@ -128,6 +187,10 @@ export class LineChartComponent implements OnInit {
       range * this.offsets[0],
       range * this.offsets[1]
     ]
+  }
+
+  private getStringSize(string: string, fontSize: number) {
+    return string.length * fontSize / 2
   }
 
   /**

@@ -18,6 +18,7 @@ export class ChartComponent implements OnInit {
   public size: number[] = [1000, 600]
   public limits: number[] = [0,0]
   public offsets: number[] = [0.2, 0.2]
+  public minLabelSpacing: number = 10
 
   constructor(private chartInput: ChartInputService) { }
   

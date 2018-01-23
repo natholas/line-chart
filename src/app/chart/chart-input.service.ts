@@ -18,9 +18,11 @@ export class ChartInputService {
         limits[0] -= zoomSpeed * (1 - pos)
         limits[1] -= zoomSpeed * pos
       } else {
-        if (limits[0] + (zoomSpeed * (1 - pos)) < 0) limits[0] += zoomSpeed * (1 - pos)
-        if (limits[1] + (zoomSpeed * pos) < 0) limits[1] += zoomSpeed * pos
+        limits[0] += zoomSpeed * (1 - pos)
+        limits[1] += zoomSpeed * pos
       }
+      if (limits[0] > 0) limits[0] = 0
+      if (limits[1] > 0) limits[1] = 0
       render()
     })
 
@@ -87,7 +89,6 @@ export class ChartInputService {
           pos = 1 / el.offsetWidth * zoomCenter
 
           if (!pos) return
-          // if (limits[0] + diff * (1 - pos) > 0 || limits[1] + diff * pos > 0) return;
           limits[0] += diff * (1 - pos)
           limits[1] += diff * pos
 
