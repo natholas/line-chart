@@ -12,8 +12,9 @@ export class ChartInputService {
     let touches: any = {}
 
     el.addEventListener('wheel', e => {
-      let pos = el.offsetWidth - e.clientX
-      pos = 1 / el.offsetWidth * pos
+      let width = el.offsetWidth - limits[0] - limits[1]
+      let pos = width - (e.clientX - limits[0])
+      pos = 1 / width * pos
       if (e.deltaY < 0) {
         limits[0] -= zoomSpeed * (1 - pos)
         limits[1] -= zoomSpeed * pos
