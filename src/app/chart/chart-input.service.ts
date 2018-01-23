@@ -6,7 +6,6 @@ export class ChartInputService {
   constructor() { }
 
   public setup(el: HTMLCanvasElement, limits, zoomSpeed, render: Function) {
-
     let dragging: boolean = false
     let previousPos: number = 0
     let touches: any = {}
@@ -98,10 +97,7 @@ export class ChartInputService {
 
           render()
         }
-
-
       }
-
       touches = e.touches
     })
 
