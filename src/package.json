@@ -1,0 +1,28 @@
+{
+  "name": "nathan-angular-chart",
+  "version": "0.1.5",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/natholas/line-chart"
+  },
+  "author": {
+    "name": "Nathan Felix",
+    "email": "natholas@gmail.com"
+  },
+  "keywords": [
+    "angular"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/natholas/line-chart/issues"
+  },
+  "main": "nathan-angular-chart.umd.js",
+  "module": "nathan-angular-chart.js",
+  "jsnext:main": "nathan-angular-chart.js",
+  "typings": "nathan-angular-chart.d.ts",
+  "peerDependencies": {
+    "@angular/core": "^5.0.0",
+    "rxjs": "^5.5.6",
+    "zone.js": "^0.8.19"
+  }
+}

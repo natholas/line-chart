@@ -1,27 +1,58 @@
-# Chart
+# nathan-angular-chart
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.6.5.
+## Installation
 
-## Development server
+To install this library, run:
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+```bash
+$ npm install nathan-angular-chart --save
+```
 
-## Code scaffolding
+## Consuming this library
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+```bash
+$ npm install nathan-angular-chart
+```
 
-## Build
+and then from your Angular `AppModule`:
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `-prod` flag for a production build.
+```typescript
+import { NathanAngularChart } from 'nathan-angular-chart';
 
-## Running unit tests
+@NgModule({
+  declarations: [
+    ...
+  ],
+  imports: [
+    ...
+    NathanAngularChart
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+```
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+Once the library is imported, you can use it as a component in your Angular application:
 
-## Running end-to-end tests
+```xml
+<!-- You can now use your library component in app.component.html -->
+<h1>
+  {{title}}
+</h1>
+<nathan-angular-chart
+  [data]="data"
+  [labels]="labels"
+  [colors]="colors" // optional
+  [decimalPlaces]="decimalPlaces" // optional
+  [fontSize]="fontSize" // optional
+  [Input]="Input" // optional
+  [limits]="limits" // optional
+  [offsets]="offsets" // optional
+  [size]="size" // optional
+  [minLabelSpacing]="minLabelSpacing" // optional
+></nathan-angular-chart>
+```
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+## License
 
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+MIT © [Nathan Felix](mailto:natholas@gmail.com)

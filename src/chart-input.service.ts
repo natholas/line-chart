@@ -24,6 +24,7 @@ export class ChartInputService {
       if (limits[0] > 0) limits[0] = 0
       if (limits[1] > 0) limits[1] = 0
       render()
+      e.preventDefault()
     })
 
     el.addEventListener('mousedown', e => {
@@ -99,6 +100,7 @@ export class ChartInputService {
         }
       }
       touches = e.touches
+      e.preventDefault()
     })
 
   }

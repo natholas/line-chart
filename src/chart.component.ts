@@ -3,7 +3,7 @@ import { ChartInputService } from './chart-input.service';
 import { ChartOptions } from './chart-options.class';
 
 @Component({
-  selector: 'app-chart',
+  selector: 'nathan-angular-chart',
   template: '<canvas #lineChart class="chart"></canvas>'
 })
 export class ChartComponent implements OnInit {
