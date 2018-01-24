@@ -35,10 +35,6 @@ import { NathanAngularChart } from 'nathan-angular-chart';
 Once the library is imported, you can use it as a component in your Angular application:
 
 ```xml
-<!-- You can now use your library component in app.component.html -->
-<h1>
-  {{title}}
-</h1>
 <nathan-angular-chart
   [data]="data"
   [labels]="labels"
@@ -50,6 +46,8 @@ Once the library is imported, you can use it as a component in your Angular appl
   [offsets]="offsets" // optional
   [size]="size" // optional
   [minLabelSpacing]="minLabelSpacing" // optional
+  [allowInput]="allowInput" // optional
+  [showGuides]="showGuides" // optional
 ></nathan-angular-chart>
 ```
 
