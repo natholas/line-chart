@@ -223,7 +223,7 @@ export class ChartComponent implements OnInit {
   private normalizeData(data: number[], min: number, max: number, offsets) {
     let lowest = Math.min(...data)
     if (lowest > offsets[0]) lowest -= offsets[0]
-    else lowest = 0
+    else lowest = -offsets[0]/4
     let highest = Math.max(...data)
     highest += offsets[1]
     let multiplier = max / (highest - lowest)
