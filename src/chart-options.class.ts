@@ -7,8 +7,10 @@ export class ChartOptions {
   zoomSpeed: number = 100
   limits: number[] = [0, 0]
   offsets: number[] = [0.2, 0.2]
-  size: number[] = [1000, 600]
+  dimensions: number[] = [1000, 600]
   minLabelSpacing: number = 10
+  allowInput: boolean = true
+  showGuides: boolean = true
 
   constructor(
     colors: string[],
@@ -16,17 +18,21 @@ export class ChartOptions {
     fontSize: number,
     limits: number[],
     offsets: number[],
-    size: number[],
+    dimensions: number[],
     minLabelSpacing: number,
-    zoomSpeed: number
+    zoomSpeed: number,
+    showGuides: boolean,
+    allowInput: boolean
   ) {
     if (colors !== undefined) this.colors = colors
     if (decimalPlaces !== undefined) this.decimalPlaces = decimalPlaces
     if (fontSize !== undefined) this.fontSize = fontSize
     if (limits !== undefined) this.limits = limits
     if (offsets !== undefined) this.offsets = offsets
-    if (size !== undefined) this.size = size
+    if (dimensions !== undefined) this.dimensions = dimensions
     if (minLabelSpacing !== undefined) this.minLabelSpacing = minLabelSpacing
     if (zoomSpeed !== undefined) this.zoomSpeed = zoomSpeed
+    if (showGuides !== undefined) this.showGuides = showGuides
+    if (allowInput !== undefined) this.allowInput = allowInput
   }
 }

@@ -4,7 +4,7 @@ import { ChartOptions } from './chart-options.class';
 
 @Component({
   selector: 'nathan-angular-chart',
-  template: '<canvas #lineChart class="chart"></canvas>'
+  template: '<canvas #lineChart class="chart" style="width:100%"></canvas>'
 })
 export class ChartComponent implements OnInit {
   @ViewChild('lineChart') lineChart
@@ -16,15 +16,17 @@ export class ChartComponent implements OnInit {
   @Input() zoomSpeed: number
   @Input() limits: number[]
   @Input() offsets: number[]
-  @Input() size: number[]
+  @Input() dimensions: number[]
   @Input() minLabelSpacing: number
+  @Input() showGuides: boolean
+  @Input() allowInput: boolean
   private options: ChartOptions
   private canvas: HTMLCanvasElement
   private ctx: CanvasRenderingContext2D
   private rendering: boolean = false
 
   constructor(private chartInput: ChartInputService) { }
-  
+
   ngOnInit() {
     this.options = new ChartOptions(
       this.colors,
@@ -32,12 +34,14 @@ export class ChartComponent implements OnInit {
       this.fontSize,
       this.limits,
       this.offsets,
-      this.size,
+      this.dimensions,
       this.minLabelSpacing,
-      this.zoomSpeed
+      this.zoomSpeed,
+      this.showGuides,
+      this.allowInput
     )
     let el = this.lineChart.nativeElement
-    this.chartInput.setup(el, this.options.limits, this.options.zoomSpeed, this.update.bind(this))
+    if (this.options.allowInput) this.chartInput.setup(el, this.options.limits, this.options.zoomSpeed, this.update.bind(this))
     this.canvas = this.lineChart.nativeElement
     this.ctx = this.canvas.getContext('2d')
     this.rendering = true
@@ -55,7 +59,7 @@ export class ChartComponent implements OnInit {
     this.clearCanvas()
 
     let xPos = this.options.limits[0]
-    let stepSize = (((this.options.size[0] - this.options.limits[0]) - this.options.limits[1]) / (data.length - 1))
+    let stepSize = (((this.options.dimensions[0] - this.options.limits[0]) - this.options.limits[1]) / (data.length - 1))
     let removeStart = Math.abs(Math.ceil(xPos / stepSize)) - 1
     let removeEnd = Math.abs(Math.floor(this.options.limits[1] / stepSize)) - 1
 
@@ -66,17 +70,17 @@ export class ChartComponent implements OnInit {
     if (removeEnd > 0) data = data.splice(0, data.length - removeEnd)
 
     let guideData = data.slice()
-    data = this.normalizeData(data, 0, this.options.size[1], this.getOffsets(data))
+    data = this.normalizeData(data, 0, this.options.dimensions[1], this.getOffsets(data))
     data = this.reverseHeights(data)
     this.drawLine(data, xPos, stepSize)
-    this.drawGuides(guideData, data)
     this.renderLabels(this.labels)
+    if (this.options.showGuides) this.drawGuides(guideData, data)
   }
 
   private renderLabels(_labels: string[]) {
     let labels = _labels.slice()
     let xPos = this.options.limits[0]
-    let stepSize = (((this.options.size[0] - this.options.limits[0]) - this.options.limits[1]) / (labels.length - 1))
+    let stepSize = (((this.options.dimensions[0] - this.options.limits[0]) - this.options.limits[1]) / (labels.length - 1))
 
     let interval = this.getLabelAdjustmentInterval(labels, this.options.minLabelSpacing)
     if (interval > 0) {
@@ -95,6 +99,10 @@ export class ChartComponent implements OnInit {
   }
 
   private drawLabels(labels: string[], xPos: number, stepSize: number) {
+    this.ctx.strokeStyle = this.options.colors[2]
+    this.ctx.fillStyle = this.options.colors[3]
+    this.ctx.lineWidth = 1
+    this.ctx.font = this.options.fontSize + "px Arial"
     for (let label of labels) {
       let labelWidth = this.getStringSize(label, this.options.fontSize)
       let startPos = xPos - labelWidth / 2
@@ -120,8 +128,8 @@ export class ChartComponent implements OnInit {
     this.ctx.lineWidth = 3
     this.ctx.stroke()
 
-    this.ctx.lineTo(this.options.size[0], this.options.size[1])
-    this.ctx.lineTo(0, this.options.size[1])
+    this.ctx.lineTo(this.options.dimensions[0], this.options.dimensions[1])
+    this.ctx.lineTo(0, this.options.dimensions[1])
     this.ctx.fill()
   }
 
@@ -187,12 +195,12 @@ export class ChartComponent implements OnInit {
   }
 
   private resizeCanvas() {
-    this.canvas.width = this.options.size[0]
-    this.canvas.height = this.options.size[1]
+    this.canvas.width = this.options.dimensions[0]
+    this.canvas.height = this.options.dimensions[1]
   }
 
   private clearCanvas() {
-    this.ctx.clearRect(0, 0, this.options.size[0], this.options.size[1])
+    this.ctx.clearRect(0, 0, this.options.dimensions[0], this.options.dimensions[1])
   }
 
   private getOffsets(data: number[]) {
@@ -230,7 +238,7 @@ export class ChartComponent implements OnInit {
    */
   private reverseHeights(input) {
     return input.map(a => {
-      return this.options.size[1] - a
+      return this.options.dimensions[1] - a
     })
   }
 
