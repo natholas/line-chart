@@ -20,13 +20,13 @@ export class ChartOptions {
     minLabelSpacing: number,
     zoomSpeed: number
   ) {
-    if (colors) this.colors = colors
-    if (decimalPlaces) this.decimalPlaces = decimalPlaces
-    if (fontSize) this.fontSize = fontSize
-    if (limits) this.limits = limits
-    if (offsets) this.offsets = offsets
-    if (size) this.size = size
-    if (minLabelSpacing) this.minLabelSpacing = minLabelSpacing
-    if (zoomSpeed) this.zoomSpeed = zoomSpeed
+    if (colors !== undefined) this.colors = colors
+    if (decimalPlaces !== undefined) this.decimalPlaces = decimalPlaces
+    if (fontSize !== undefined) this.fontSize = fontSize
+    if (limits !== undefined) this.limits = limits
+    if (offsets !== undefined) this.offsets = offsets
+    if (size !== undefined) this.size = size
+    if (minLabelSpacing !== undefined) this.minLabelSpacing = minLabelSpacing
+    if (zoomSpeed !== undefined) this.zoomSpeed = zoomSpeed
   }
 }

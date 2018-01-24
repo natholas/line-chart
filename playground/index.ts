@@ -14,7 +14,8 @@ import { NathanAngularChart } from 'nathan-angular-chart';
   <nathan-angular-chart
   [data]="data"
   [labels]="labels"
-></nathan-angular-chart>`
+  [decimalPlaces]="0"
+></nathan-angular-chart><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>`
 })
 class AppComponent {
   data = [1,3,2,4,5]
