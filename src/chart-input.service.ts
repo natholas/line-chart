@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable } from '@angular/core'
 
 @Injectable()
 export class ChartInputService {
@@ -11,8 +11,14 @@ export class ChartInputService {
     let touches: any = {}
 
     el.addEventListener('wheel', e => {
-      let width = el.offsetWidth - limits[0] - limits[1]
-      let pos = width - (e.clientX - limits[0])
+      let multiplier = el.offsetWidth / el.width
+      let _limits = [
+        limits[0] * multiplier,
+        limits[1] * multiplier
+      ]
+      
+      let width = el.offsetWidth - _limits[0] - _limits[1]
+      let pos = width - (e.offsetX - _limits[0])
       pos = 1 / width * pos
       if (e.deltaY < 0) {
         limits[0] -= zoomSpeed * (1 - pos)
@@ -28,7 +34,7 @@ export class ChartInputService {
     })
 
     el.addEventListener('mousedown', e => {
-      previousPos = e.clientX
+      previousPos = e.offsetX
       dragging = true
     })
 
@@ -38,9 +44,11 @@ export class ChartInputService {
 
     el.addEventListener('mousemove', e => {
       if (!dragging) return
-      var diff = e.clientX - previousPos
-      previousPos = e.clientX
-      if (limits[0] + diff > 0 || limits[1] - diff > 0) return;
+      let multiplier = el.offsetWidth / el.width
+      var diff = (e.offsetX - previousPos) / multiplier
+
+      previousPos = e.offsetX
+      if (limits[0] + diff > 0 || limits[1] - diff > 0) return
       limits[0] += diff
       limits[1] -= diff
       render()
@@ -51,14 +59,15 @@ export class ChartInputService {
     })
 
     el.addEventListener('touchmove', e => {
+      let multiplier = el.offsetWidth / el.width
       if (Object.keys(e.touches).length === 1) {
         // moving
         let touch = e.touches[0]
         if (touches[touch.identifier]) {
           let diff = touch.clientX - touches[touch.identifier].clientX
-          diff *= 2
+          diff /= multiplier
           previousPos = touch.clientX
-          if (limits[0] + diff > 0 || limits[1] - diff > 0) return;
+          if (limits[0] + diff > 0 || limits[1] - diff > 0) return
           limits[0] += diff
           limits[1] -= diff
           render()
@@ -72,22 +81,33 @@ export class ChartInputService {
         let _touch2 = touches[touch2.identifier]
 
         if (_touch1 && _touch2) {
-          let diff1 = touch1.clientX - _touch1.clientX
-          let diff2 = touch2.clientX - _touch2.clientX
-          let leftDiff = touch1.clientX < touch2.clientX ? diff1 : diff2
-          let rightDiff = touch1.clientX >= touch2.clientX ? diff1 : diff2
+          let bounds = el.getBoundingClientRect()
+          let posX1 = (touch1.clientX - bounds.left)
+          let posX2 = (touch2.clientX - bounds.left)
+          let _posX1 = (_touch1.clientX - bounds.left)
+          let _posX2 = (_touch2.clientX - bounds.left)
+          
+          let diff1 = posX1 - _posX1
+          let diff2 = posX2 - _posX2
+          let leftDiff = posX1 < posX2 ? diff1 : diff2
+          let rightDiff = posX1 >= posX2 ? diff1 : diff2
+          
           let diff = leftDiff - rightDiff
-          diff *= 4
+          diff /= multiplier
           let total = Math.abs(rightDiff) + Math.abs(leftDiff)
           let pos = 1 / total * Math.abs(rightDiff)
 
-          let leftPos = touch1.clientX < touch2.clientX ? touch1.clientX : touch2.clientX
-          let rightPos = touch1.clientX >= touch2.clientX ? touch1.clientX : touch2.clientX
-          
-          let width = el.offsetWidth
-          let touchWidth = rightPos - leftPos
+          let leftPos = posX1 < posX2 ? posX1 : posX2
+          let rightPos = posX1 >= posX2 ? posX1 : posX2
+          leftPos /= multiplier
+          rightPos /= multiplier
+          leftPos -= limits[0]
+          rightPos -= limits[0]
+
+          let width = el.width - limits[0] - limits[1]
+          let touchWidth = (rightPos - leftPos)
           let zoomCenter = leftPos + (touchWidth * pos)
-          pos = 1 / el.offsetWidth * zoomCenter
+          pos = 1 / width * zoomCenter
 
           if (!pos) return
           limits[0] += diff * (1 - pos)
@@ -100,7 +120,6 @@ export class ChartInputService {
         }
       }
       touches = e.touches
-      e.preventDefault()
     })
 
   }

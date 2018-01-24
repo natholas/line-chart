@@ -10,17 +10,24 @@ import { NathanAngularChart } from 'nathan-angular-chart';
 
 @Component({
   selector: 'app',
-  template: `<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+  template: `
   <nathan-angular-chart
+  class="line-chart"
   [data]="data"
   [labels]="labels"
   [decimalPlaces]="0"
-  [allowInput]="false"
-  [showGuides]="false"
-></nathan-angular-chart><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>`
+></nathan-angular-chart>`,
+  styles: [
+    `.line-chart {
+      width: 100%;
+      display: block;
+      position: absolute;
+      right: 0;
+    }`
+  ]
 })
 class AppComponent {
-  data = [1,3,2,4,5]
+  data = [1, 3, 2, 4, 5, 1, 3, 2, 4, 5, 1, 3, 2, 4, 5, 1, 3, 2, 4, 5, 1, 3, 2, 4, 5, 1, 3, 2, 4, 5, 1, 3, 2, 4, 5, 1, 3, 2, 4, 5, 1, 3, 2, 4, 5, 1, 3, 2, 4, 5, 1, 3, 2, 4, 5, 1, 3, 2, 4, 5, 1, 3, 2, 4, 5, 1, 3, 2, 4, 5, 1, 3, 2, 4, 5, 1, 3, 2, 4, 5, 1, 3, 2, 4, 5, 1, 3, 2, 4, 5,]
   labels = ['a', 'b', 'c', 'd', 'e']
 }
 
