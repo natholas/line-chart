@@ -3,7 +3,7 @@
   "version": "0.1.5",
   "repository": {
     "type": "git",
-    "url": "https://github.com/natholas/line-chart"
+    "url": "https://github.com/natholas/nathan-angular-chart"
   },
   "author": {
     "name": "Nathan Felix",
@@ -14,7 +14,7 @@
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/natholas/line-chart/issues"
+    "url": "https://github.com/natholas/nathan-angular-chart/issues"
   },
   "main": "nathan-angular-chart.umd.js",
   "module": "nathan-angular-chart.js",
